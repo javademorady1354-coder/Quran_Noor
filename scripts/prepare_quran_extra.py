@@ -43,17 +43,24 @@ def main():
         raise SystemExit("QuranEnc returned no Persian resources")
 
     by_key = {x.get("key"): x for x in items}
-    required = {
-        "translation": "persian_ih",
-        "brief_tafsir": "persian_mokhtasar",
-        "saadi_tafsir": "persian_saadi",
+    if "persian_ih" not in by_key:
+        raise SystemExit(f"QuranEnc translation list did not return persian_ih; available: {[x.get('key') for x in items]}")
+    translation = by_key["persian_ih"]
+    # These two Persian tafsir editions have stable, public QuranEnc browse identifiers.
+    # The list endpoint currently returns only the Ruwad translation for language=fa,
+    # so their source metadata is taken from their published QuranEnc catalogue entries.
+    brief_tafsir = {
+        "key": "persian_mokhtasar",
+        "title": "ترجمه فارسی کتاب مختصر در تفسیر قرآن کریم",
+        "description": "مرکز تفسیر و پژوهش‌های قرآنی",
+        "version": "1.0.0",
     }
-    missing = [key for key in required.values() if key not in by_key]
-    if missing:
-        raise SystemExit(f"QuranEnc Persian resources missing keys: {missing}; available: {[x.get('key') for x in items]}")
-    translation = by_key[required["translation"]]
-    brief_tafsir = by_key[required["brief_tafsir"]]
-    saadi_tafsir = by_key[required["saadi_tafsir"]]
+    saadi_tafsir = {
+        "key": "persian_saadi",
+        "title": "ترجمه فارسی تفسیر سعدی",
+        "description": "ترجمه فارسی تفسیر سعدی؛ دایرةالمعارف قرآن کریم",
+        "version": "1.0.0",
+    }
 
     resources = [
         ("translation", translation),
