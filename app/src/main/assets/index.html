@@ -1,55 +1,113 @@
 <!doctype html>
 <html lang="fa" dir="rtl">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#101820">
 <title>قرآن کریم – نور هدایت</title>
 <style>
-:root{--bg:#101820;--panel:#1b2935;--gold:#d9b66f;--txt:#f4efe4;--muted:#b8c1c8}
+:root{--bg:#101820;--panel:#1b2935;--panel2:#243744;--gold:#d9b66f;--txt:#f4efe4;--muted:#b8c1c8;--line:#3a4c57;--green:#8eb5a0}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font-family:Tahoma,Arial,sans-serif}
-header{padding:22px 18px 16px;background:linear-gradient(140deg,#243b43,#14232c);border-bottom:1px solid #354751}
-h1{font-size:22px;margin:0 0 7px;color:var(--gold)}header p{margin:0;color:var(--muted);font-size:13px}
-nav{display:flex;gap:8px;padding:12px;overflow:auto;background:#15222b;position:sticky;top:0}
-button,input,select{font:inherit}button{border:1px solid #45545d;background:#263743;color:var(--txt);padding:10px 13px;border-radius:10px}
-button.active{background:var(--gold);color:#17232b;border-color:var(--gold)}
-main{padding:14px;max-width:760px;margin:auto}.panel{background:var(--panel);border:1px solid #30424d;border-radius:16px;padding:15px;margin-bottom:13px}
-input{width:100%;padding:12px;border-radius:10px;border:1px solid #465660;background:#101c24;color:var(--txt);margin:8px 0}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-.surah{display:flex;justify-content:space-between;align-items:center;text-align:right;width:100%;gap:8px}
-.small{font-size:12px;color:var(--muted)}.gold{color:var(--gold)}
-#reader{display:none}.arabic{font-family:serif;font-size:30px;line-height:2.1;text-align:center;direction:rtl}
-.notice{line-height:1.9;color:var(--muted);font-size:13px}.toolbar{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
-footer{text-align:center;color:var(--muted);font-size:11px;padding:24px}
-</style></head>
+header{padding:20px 17px 15px;background:linear-gradient(140deg,#243b43,#14232c);border-bottom:1px solid var(--line)}
+h1{font-size:21px;margin:0 0 6px;color:var(--gold)}header p{margin:0;color:var(--muted);font-size:12px}
+nav{display:flex;gap:7px;padding:10px;background:#15222b;position:sticky;top:0;z-index:5;overflow:auto}
+button,input,select,textarea{font:inherit}button{border:1px solid #455963;background:#263743;color:var(--txt);padding:9px 12px;border-radius:10px;cursor:pointer}
+button:active{transform:scale(.98)}button.primary{background:var(--gold);color:#18242b;border-color:var(--gold);font-weight:bold}
+button.ghost{background:transparent}button:disabled{opacity:.45}
+nav button.active{background:var(--gold);color:#17232b;border-color:var(--gold)}
+main{padding:12px;max-width:850px;margin:auto}.panel{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:13px;margin-bottom:11px}
+.row{display:flex;gap:7px;align-items:center;flex-wrap:wrap}.row>*{min-width:0}
+input,select,textarea{width:100%;padding:11px;border-radius:10px;border:1px solid #465a65;background:#101c24;color:var(--txt);margin:6px 0}
+select{flex:1;min-width:130px}.small{font-size:12px;color:var(--muted)}.gold{color:var(--gold)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.surah{display:flex;justify-content:space-between;align-items:center;text-align:right;width:100%;gap:5px}
+.hidden{display:none!important}.toolbar{display:flex;gap:7px;flex-wrap:wrap;margin:8px 0}
+.page-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:9px}
+.ayah{padding:14px 10px;border-bottom:1px solid var(--line)}.ayah:last-child{border:0}
+.arabic{font-family:"Noto Naskh Arabic","Amiri",serif;font-size:29px;line-height:2.05;text-align:justify;direction:rtl;white-space:normal}
+.ayah-tools{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.ayah-tools button{font-size:11px;padding:7px 9px}
+.badge{display:inline-block;border:1px solid #566a74;border-radius:20px;padding:3px 8px;color:var(--gold);font-size:11px}
+.note-area{min-height:74px}.notice{line-height:1.9;color:var(--muted);font-size:12px}
+.results button{width:100%;text-align:right;margin:4px 0}.bookmark-item{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+#reader{display:none}footer{text-align:center;color:var(--muted);font-size:11px;padding:22px}
+@media(min-width:600px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.arabic{font-size:34px}}
+body.light{--bg:#f4efe4;--panel:#fffaf0;--panel2:#eee5d4;--txt:#202b31;--muted:#5d696f;--line:#d4c8b4;background:var(--bg);color:var(--txt)}
+body.light nav{background:#e7dece}body.light input,body.light select,body.light textarea{background:#fff;color:#202b31;border-color:#c9bda9}body.light button{background:#eee5d4;color:#202b31;border-color:#c9bda9}body.light button.primary{background:#b88b3c;color:white}
+</style>
+</head>
 <body>
-<header><h1>قرآن کریم – نور هدایت</h1><p>نسخه آفلاین • بدون صوت • محیط مطالعه</p></header>
-<nav><button class="active" onclick="showTab('surahs',this)">سوره‌ها</button><button onclick="showTab('bookmarks',this)">نشان‌شده‌ها</button><button onclick="showTab('settings',this)">تنظیمات</button></nav>
+<header><h1>قرآن کریم – نور هدایت</h1><p>متن عثمانی • ۶۰۴ صفحه مصحف مدینه • کاملاً آفلاین • بدون صوت</p></header>
+<nav>
+<button class="active" data-tab="surahs" onclick="showTab('surahs',this)">سوره‌ها</button>
+<button data-tab="pages" onclick="showTab('pages',this)">صفحه و جزء</button>
+<button data-tab="search" onclick="showTab('search',this)">جست‌وجو</button>
+<button data-tab="bookmarks" onclick="showTab('bookmarks',this)">نشانک‌ها</button>
+<button data-tab="settings" onclick="showTab('settings',this)">تنظیمات</button>
+</nav>
 <main>
 <section id="surahs">
-<div class="panel"><b>جست‌وجوی سوره</b><input id="search" placeholder="نام سوره را بنویسید..." oninput="filterSurahs()"><div class="small">فهرست ۱۱۴ سوره قرآن کریم</div></div>
-<div id="surahList" class="grid"></div>
+<div class="panel"><b>فهرست سوره‌ها</b><input id="surahSearch" placeholder="جست‌وجوی نام سوره..." oninput="renderSurahs()"><div id="surahList" class="grid"></div></div>
 </section>
-<section id="reader" class="panel">
-<button onclick="backToList()">← بازگشت به فهرست</button>
-<h2 id="surahTitle" class="gold"></h2>
-<div class="notice">این نسخه، پوسته اولیه برنامه است. متن کامل مصحف عثمان‌طه، شماره صفحه‌های ۶۰۴گانه، ترجمه‌ها و تفاسیر باید پس از افزودن داده‌های دارای مجوز و تطبیق دقیق در نسخه بعدی فعال شوند.</div>
-<div class="toolbar"><button onclick="saveBookmark()">ذخیره نشانک</button><button onclick="changeFont(2)">بزرگ‌تر</button><button onclick="changeFont(-2)">کوچک‌تر</button></div>
-<div id="bookmarkMsg" class="small"></div>
+<section id="pages" class="hidden">
+<div class="panel">
+<b>رفتن به صفحه مصحف</b>
+<div class="row"><button onclick="movePage(-1)">صفحه قبل</button><input id="pageInput" type="number" min="1" max="604" value="1" style="max-width:100px;text-align:center"><button class="primary" onclick="goPage()">برو</button><button onclick="movePage(1)">صفحه بعد</button></div>
+<div class="small">از ۱ تا ۶۰۴ • صفحه‌بندی بر اساس فراداده مصحف مدینه</div>
+</div>
+<div class="panel"><b>رفتن به جزء</b><div class="row"><select id="juzSelect"></select><button class="primary" onclick="goJuz()">نمایش جزء</button></div></div>
 </section>
-<section id="bookmarks" style="display:none"><div class="panel"><h3>نشانک‌های من</h3><div id="bookmarkList" class="notice">هنوز نشانکی ذخیره نشده است.</div></div></section>
-<section id="settings" style="display:none"><div class="panel"><h3>تنظیمات مطالعه</h3><label>اندازه نوشته</label><div class="toolbar"><button onclick="changeFont(2)">افزایش</button><button onclick="changeFont(-2)">کاهش</button><button onclick="toggleTheme()">تغییر حالت روشن/تیره</button></div><p class="notice">امکانات ترجمه، تفسیر، یادداشت، جست‌وجوی آیه و پرش به جزء و صفحه در مراحل بعدی تکمیل می‌شوند.</p></div></section>
-</main><footer>نور هدایت • نسخه آزمایشی ۰٫۱</footer>
+<section id="search" class="hidden">
+<div class="panel"><b>جست‌وجو در متن عربی قرآن</b><input id="query" placeholder="عبارت عربی را وارد کنید"><button class="primary" onclick="searchQuran()">جست‌وجو</button><div id="searchStatus" class="small"></div><div id="searchResults" class="results"></div></div>
+</section>
+<section id="bookmarks" class="hidden"><div class="panel"><b>نشانک‌های ذخیره‌شده</b><div id="bookmarkList" class="notice">هنوز نشانکی ذخیره نشده است.</div></div><div class="panel"><b>آخرین محل مطالعه</b><div id="lastRead" class="notice">هنوز مطالعه‌ای ثبت نشده است.</div></div></section>
+<section id="settings" class="hidden">
+<div class="panel"><b>تنظیمات نمایش</b><div class="toolbar"><button onclick="changeFont(-2)">کوچک‌تر</button><button onclick="changeFont(2)">بزرگ‌تر</button><button onclick="toggleTheme()">تغییر حالت روشن / تیره</button></div><p class="small">اندازه نوشته: <span id="fontLabel">29</span> پیکسل</p></div>
+<div class="panel"><b>ترجمه و تفسیر</b><p class="notice">نام ترجمه‌ها و تفاسیر در فهرست زیر آماده شده‌اند؛ اما متن آن‌ها تا دریافت مجوز بازنشر در برنامه قرار نمی‌گیرد.</p>
+<label class="small">ترجمه‌های درخواستی</label><select disabled><option>فولادوند — نیازمند مجوز بازنشر</option><option>مکارم شیرازی — نیازمند مجوز بازنشر</option><option>الهی قمشه‌ای — نیازمند مجوز بازنشر</option><option>بهاءالدین خرمشاهی — نیازمند مجوز بازنشر</option></select>
+<label class="small">تفاسیر درخواستی</label><select disabled><option>المیزان — نیازمند مجوز بازنشر</option><option>نمونه — نیازمند مجوز بازنشر</option><option>نور — نیازمند مجوز بازنشر</option><option>مجمع‌البیان — نیازمند مجوز بازنشر</option></select></div>
+<div class="panel"><b>منبع متن قرآن</b><p class="notice">متن عثمانی از پروژه Tanzil دریافت می‌شود و بدون تغییر در برنامه قرار می‌گیرد. برای مشاهده منبع و شرایط استفاده، به صفحه معرفی‌شده در بخش منابع مخزن مراجعه کنید.</p></div>
+</section>
+<section id="reader">
+<div class="panel">
+<div class="page-head"><button onclick="backHome()">← فهرست</button><div><span class="badge" id="readerPage">صفحه ۱</span> <span class="badge" id="readerJuz">جزء ۱</span></div></div>
+<div class="row"><button onclick="movePage(-1)">قبلی</button><select id="readerSurah" onchange="goSurahSelect()"></select><button onclick="movePage(1)">بعدی</button></div>
+<h2 id="readerTitle" class="gold"></h2>
+<div id="ayahList"></div>
+<div class="toolbar"><button onclick="movePage(-1)">صفحه قبل</button><button class="primary" onclick="movePage(1)">صفحه بعد</button></div>
+</div>
+</section>
+</main>
+<footer>نور هدایت • نسخه آفلاین • متن عربی: Tanzil Project</footer>
+<script src="quran-data.js"></script>
 <script>
-const names=["الفاتحة","البقرة","آل عمران","النساء","المائدة","الأنعام","الأعراف","الأنفال","التوبة","يونس","هود","يوسف","الرعد","إبراهيم","الحجر","النحل","الإسراء","الكهف","مريم","طه","الأنبياء","الحج","المؤمنون","النور","الفرقان","الشعراء","النمل","القصص","العنكبوت","الروم","لقمان","السجدة","الأحزاب","سبأ","فاطر","يس","الصافات","ص","الزمر","غافر","فصلت","الشورى","الزخرف","الدخان","الجاثية","الأحقاف","محمد","الفتح","الحجرات","ق","الذاريات","الطور","النجم","القمر","الرحمن","الواقعة","الحديد","المجادلة","الحشر","الممتحنة","الصف","الجمعة","المنافقون","التغابن","الطلاق","التحريم","الملك","القلم","الحاقة","المعارج","نوح","الجن","المزمل","المدثر","القيامة","الإنسان","المرسلات","النبأ","النازعات","عبس","التكوير","الانفطار","المطففين","الانشقاق","البروج","الطارق","الأعلى","الغاشية","الفجر","البلد","الشمس","الليل","الضحى","الشرح","التين","العلق","القدر","البينة","الزلزلة","العاديات","القارعة","التكاثر","العصر","الهمزة","الفيل","قريش","الماعون","الكوثر","الكافرون","النصر","المسد","الإخلاص","الفلق","الناس"];
-let selected=0,fontSize=30;
-function render(list=names){const el=document.getElementById('surahList');el.innerHTML='';list.forEach(n=>{const i=names.indexOf(n);const b=document.createElement('button');b.className='surah';b.innerHTML='<span>'+n+'</span><span class="small">'+(i+1)+' • سوره</span>';b.onclick=()=>openSurah(i);el.appendChild(b)})}
-function filterSurahs(){const q=document.getElementById('search').value.trim();render(names.filter(n=>n.includes(q)))}
-function showTab(id,btn){['surahs','reader','bookmarks','settings'].forEach(x=>document.getElementById(x).style.display=x===id?(id==='reader'?'block':'block'):'none');document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));if(btn)btn.classList.add('active');if(id==='bookmarks')renderBookmarks()}
-function openSurah(i){selected=i;document.getElementById('surahTitle').textContent='سوره '+names[i];document.getElementById('surahs').style.display='none';document.getElementById('reader').style.display='block';document.getElementById('bookmarkMsg').textContent=''}
-function backToList(){document.getElementById('reader').style.display='none';document.getElementById('surahs').style.display='block'}
-function saveBookmark(){let a=JSON.parse(localStorage.getItem('quranBookmarks')||'[]');if(!a.includes(selected))a.push(selected);localStorage.setItem('quranBookmarks',JSON.stringify(a));document.getElementById('bookmarkMsg').textContent='نشانک سوره ذخیره شد.'}
-function renderBookmarks(){let a=JSON.parse(localStorage.getItem('quranBookmarks')||'[]');let el=document.getElementById('bookmarkList');el.innerHTML='';if(!a.length){el.textContent='هنوز نشانکی ذخیره نشده است.';return}a.forEach(i=>{let b=document.createElement('button');b.textContent=names[i];b.onclick=()=>{showTab('surahs',document.querySelector('nav button'));openSurah(i)};el.appendChild(b)})}
-function changeFont(d){fontSize=Math.max(20,Math.min(48,fontSize+d));document.querySelectorAll('.arabic').forEach(x=>x.style.fontSize=fontSize+'px')}
-function toggleTheme(){let light=document.body.dataset.light!=='1';document.body.dataset.light=light?'1':'0';document.documentElement.style.setProperty('--bg',light?'#f4efe4':'#101820');document.documentElement.style.setProperty('--panel',light?'#fffaf0':'#1b2935');document.documentElement.style.setProperty('--txt',light?'#202b31':'#f4efe4')}
-render();
-</script></body></html>
+const data=window.QURAN_DATA;
+let currentPage=1,currentFont=29,currentSurah=1;
+const $=id=>document.getElementById(id);
+const allAyahs=()=>data.surahs.flatMap(s=>s.v.map(a=>({...a,sn:s.n,sa:s.a})));
+const ayahKey=(s,a)=>s+':'+a;
+function getBookmarks(){try{return JSON.parse(localStorage.getItem('qn_bookmarks')||'[]')}catch(e){return[]}}
+function setBookmarks(v){localStorage.setItem('qn_bookmarks',JSON.stringify(v))}
+function showTab(id,btn){['surahs','pages','search','bookmarks','settings','reader'].forEach(x=>$(x).classList.toggle('hidden',x!==id));document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));if(btn)btn.classList.add('active');if(id==='bookmarks')renderBookmarks()}
+function renderSurahs(){const q=$('surahSearch').value.trim().toLowerCase();$('surahList').innerHTML='';data.surahs.filter(s=>(s.a+' '+s.e+' '+s.tr).toLowerCase().includes(q)).forEach(s=>{const b=document.createElement('button');b.className='surah';b.innerHTML='<span>'+s.a+'</span><span class="small">'+s.n+' • '+s.c+' آیه</span>';b.onclick=()=>openSurah(s.n);$('surahList').appendChild(b)})}
+function init(){if(!data||!data.surahs||data.surahs.length!==114){$('surahList').textContent='داده قرآن در این نسخه بارگذاری نشده است. APK را از آخرین اجرای موفق Actions دریافت کنید.';return}renderSurahs();$('readerSurah').innerHTML=data.surahs.map(s=>'<option value="'+s.n+'">'+s.n+' - '+s.a+'</option>').join('');$('juzSelect').innerHTML=Array.from({length:30},(_,i)=>'<option value="'+(i+1)+'">جزء '+(i+1)+'</option>').join('');const last=localStorage.getItem('qn_last');if(last){const x=JSON.parse(last);currentPage=x.p||1}renderPage(currentPage)}
+function openSurah(n){const s=data.surahs[n-1];if(!s)return;currentSurah=n;const first=s.v[0];renderPage(first.p);$('readerSurah').value=n;showTab('reader')}
+function openAyah(s,a){const surah=data.surahs[s-1],v=surah&&surah.v[a-1];if(v){currentSurah=s;renderPage(v.p);setTimeout(()=>{const el=$('ayah-'+s+'-'+a);if(el)el.scrollIntoView({behavior:'smooth',block:'center'})},50);showTab('reader')}}
+function renderPage(p){p=Math.max(1,Math.min(604,Number(p)||1));currentPage=p;$('pageInput').value=p;const rows=[];data.surahs.forEach(s=>s.v.forEach(a=>{if(a.p===p)rows.push({s,a})}));if(!rows.length){$('ayahList').innerHTML='<p class="notice">برای این صفحه آیه‌ای یافت نشد.</p>';return}
+currentSurah=rows[0].s.n;$('readerSurah').value=currentSurah;$('readerTitle').textContent=rows[0].s.a+' • '+(rows.length>1&&rows[0].s.n!==rows[rows.length-1].s.n?'چند سوره':'سوره '+rows[0].s.n);$('readerPage').textContent='صفحه '+p;$('readerJuz').textContent='جزء '+rows[0].a.j;
+$('ayahList').innerHTML=rows.map(({s,a})=>'<article class="ayah" id="ayah-'+s.n+'-'+a.n+'"><div class="small">'+s.n+':'+a.n+' <span class="badge">صفحه '+a.p+'</span></div><div class="arabic">'+a.t+' <span class="gold">۞</span></div><div class="ayah-tools"><button onclick="toggleBookmark('+s.n+','+a.n+')">☆ نشانک</button><button onclick="editNote('+s.n+','+a.n+')">یادداشت</button><button onclick="copyAyah('+s.n+','+a.n+')">کپی آیه</button></div><div id="note-'+s.n+'-'+a.n+'" class="small"></div></article>').join('');
+localStorage.setItem('qn_last',JSON.stringify({p:p,s:currentSurah,a:rows[0].a.n}));}
+function movePage(d){renderPage(currentPage+d);showTab('reader')}
+function goPage(){renderPage($('pageInput').value);showTab('reader')}
+function goJuz(){const j=Number($('juzSelect').value);const a=allAyahs().find(x=>x.j===j);if(a){renderPage(a.p);showTab('reader')}}
+function goSurahSelect(){openSurah(Number($('readerSurah').value))}
+function backHome(){showTab('surahs',document.querySelector('[data-tab="surahs"]'))}
+function toggleBookmark(s,a){const key=ayahKey(s,a),b=getBookmarks();const i=b.indexOf(key);if(i>=0)b.splice(i,1);else b.push(key);setBookmarks(b);alert(i>=0?'نشانک حذف شد.':'آیه نشانک شد.')}
+function renderBookmarks(){const b=getBookmarks();$('bookmarkList').innerHTML=b.length?b.map(k=>{const [s,a]=k.split(':').map(Number);return '<div class="bookmark-item"><span>'+data.surahs[s-1].a+' • آیه '+a+'</span><button onclick="openAyah('+s+','+a+')">باز کردن</button></div>'}).join(''):'هنوز نشانکی ذخیره نشده است.';const last=localStorage.getItem('qn_last');if(last){const x=JSON.parse(last);$('lastRead').innerHTML='صفحه '+x.p+' <button onclick="renderPage('+x.p+');showTab(\'reader\')">ادامه مطالعه</button>'}else $('lastRead').textContent='هنوز مطالعه‌ای ثبت نشده است.'}
+function editNote(s,a){const key='qn_note_'+ayahKey(s,a),old=localStorage.getItem(key)||'',val=prompt('یادداشت برای آیه '+s+':'+a,old);if(val!==null){localStorage.setItem(key,val);$('note-'+s+'-'+a).textContent=val?'یادداشت: '+val:''}}
+function copyAyah(s,a){const t=data.surahs[s-1].v[a-1].t;if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(()=>alert('متن آیه کپی شد.')).catch(()=>alert(t));else alert(t)}
+function searchQuran(){const q=$('query').value.trim();if(!q)return;const res=[];for(const s of data.surahs){for(const a of s.v){if(a.t.includes(q)){res.push({s,a});if(res.length>=100)break}}if(res.length>=100)break}$('searchStatus').textContent=res.length+' نتیجه (حداکثر ۱۰۰ مورد نمایش داده می‌شود).';$('searchResults').innerHTML=res.map(x=>'<button onclick="openAyah('+x.s.n+','+x.a.n+')"><b>'+x.s.a+' '+x.s.n+':'+x.a.n+'</b><br>'+x.a.t+'</button>').join('')||'<p class="notice">نتیجه‌ای یافت نشد.</p>'}
+function changeFont(d){currentFont=Math.max(20,Math.min(48,currentFont+d));document.querySelectorAll('.arabic').forEach(x=>x.style.fontSize=currentFont+'px');$('fontLabel').textContent=currentFont;localStorage.setItem('qn_font',currentFont)}
+function toggleTheme(){document.body.classList.toggle('light');localStorage.setItem('qn_light',document.body.classList.contains('light')?'1':'0')}
+(function restore(){if(localStorage.getItem('qn_light')==='1')document.body.classList.add('light');currentFont=Number(localStorage.getItem('qn_font')||29);$('fontLabel').textContent=currentFont})();
+init();
+</script>
+</body></html>
