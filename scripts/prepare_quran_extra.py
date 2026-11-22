@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
-"""Package Persian QuranEnc resources for offline use, preserving source text verbatim."""
+"""Package only Persian QuranEnc resources explicitly present in its public catalogue."""
 import concurrent.futures
 import json
 import pathlib
-import urllib.request
-import urllib.error
 import time
+import urllib.error
+import urllib.request
 
 BASE = "https://quranenc.com/api/v1"
 OUT = pathlib.Path("app/src/main/assets/quran-extra-data.js")
-HEADERS = {"User-Agent": "QuranNoor/1.1 (offline resource packaging)"}
+HEADERS = {"User-Agent": "QuranNoor/1.2 (offline resource packaging)"}
 
 def get_json(url):
     last_error = None
@@ -23,95 +23,55 @@ def get_json(url):
             if attempt == 3:
                 break
             time.sleep(2 ** attempt)
-    raise RuntimeError(f"QuranEnc request failed after retries: {url}: {last_error}")
-
-def norm(value):
-    return str(value or "").replace("ي", "ی").replace("ى", "ی").replace("ك", "ک").replace("ة", "ه")
-
-def choose(items, predicate, label):
-    matches = [x for x in items if predicate(norm(x.get("title", "")), norm(x.get("key", "")))]
-    if len(matches) != 1:
-        names = [x.get("title", x.get("key", "?")) for x in matches]
-        raise SystemExit(f"Expected exactly one {label}; found {len(matches)}: {names}")
-    return matches[0]
+    raise RuntimeError(f"QuranEnc request failed: {url}: {last_error}")
 
 def main():
-    payload = get_json(f"{BASE}/translations/list/fa?localization=fa")
-    items = payload.get("translations", [])
-    persian = [x for x in items if x.get("language_iso_code") == "fa"]
-    if not persian:
-        raise SystemExit("QuranEnc returned no Persian resources")
+    catalogue = get_json(f"{BASE}/translations/list/fa?localization=fa")
+    entries = catalogue.get("translations", [])
+    entries = [x for x in entries if x.get("language_iso_code") == "fa" and x.get("key")]
+    if not entries:
+        raise SystemExit("QuranEnc catalogue contains no Persian translations; refusing to package unverified text.")
 
-    by_key = {x.get("key"): x for x in items}
-    if "persian_ih" not in by_key:
-        raise SystemExit(f"QuranEnc translation list did not return persian_ih; available: {[x.get('key') for x in items]}")
-    translation = by_key["persian_ih"]
-    # These two Persian tafsir editions have stable, public QuranEnc browse identifiers.
-    # The list endpoint currently returns only the Ruwad translation for language=fa,
-    # so their source metadata is taken from their published QuranEnc catalogue entries.
-    brief_tafsir = {
-        "key": "persian_mokhtasar",
-        "title": "ترجمه فارسی کتاب مختصر در تفسیر قرآن کریم",
-        "description": "مرکز تفسیر و پژوهش‌های قرآنی",
-        "version": "1.0.0",
-    }
-    saadi_tafsir = {
-        "key": "persian_saadi",
-        "title": "ترجمه فارسی تفسیر سعدی",
-        "description": "ترجمه فارسی تفسیر سعدی؛ دایرةالمعارف قرآن کریم",
-        "version": "1.0.0",
-    }
-
-    resources = [
-        ("translation", translation),
-        ("brief_tafsir", brief_tafsir),
-        ("saadi_tafsir", saadi_tafsir),
-    ]
-
-    def fetch_sura(pair):
-        resource_id, item, sura = pair
-        key = item["key"]
-        url = f"{BASE}/translation/sura/{key}/{sura}"
-        data = get_json(url)
+    def fetch_sura(task):
+        key, sura = task
+        data = get_json(f"{BASE}/translation/sura/{key}/{sura}")
         rows = data.get("result")
         if not isinstance(rows, list) or not rows:
-            raise RuntimeError(f"Unexpected QuranEnc response for {key}, sura {sura}: {str(data)[:500]}")
-        return resource_id, sura, rows
+            raise RuntimeError(f"Unexpected QuranEnc response for {key}, sura {sura}")
+        return key, sura, rows
 
-    tasks = [(rid, item, sura) for rid, item in resources for sura in range(1, 115)]
-    collected = {rid: {} for rid, _ in resources}
+    tasks = [(item["key"], sura) for item in entries for sura in range(1, 115)]
+    collected = {item["key"]: {} for item in entries}
     with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
         futures = [pool.submit(fetch_sura, task) for task in tasks]
         for future in concurrent.futures.as_completed(futures):
-            try:
-                rid, sura, rows = future.result()
-                collected[rid][str(sura)] = rows
-            except Exception as exc:
-                raise RuntimeError(f"Failed while downloading QuranEnc resource: {exc}") from exc
+            key, sura, rows = future.result()
+            collected[key][str(sura)] = rows
 
     packed = {}
-    for rid, item in resources:
-        if len(collected[rid]) != 114:
-            raise SystemExit(f"Incomplete resource {item['key']}")
-        packed[rid] = {
-            "key": item["key"],
-            "title": item.get("title", ""),
+    for item in entries:
+        key = item["key"]
+        if len(collected[key]) != 114:
+            raise SystemExit(f"Incomplete Persian resource: {key}")
+        packed[key] = {
+            "key": key,
+            "title": item.get("title", key),
             "description": item.get("description", ""),
-            "version": item.get("version", ""),
+            "version": item.get("version", "unspecified"),
             "last_update": item.get("last_update"),
             "source": "QuranEnc.com",
-            "surahs": collected[rid],
+            "surahs": collected[key],
         }
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(
-        "/* QuranEnc Persian resources. Reproduced unchanged under QuranEnc Terms and Policies. */\n"
-        "window.QURAN_EXTRA_DATA = " + json.dumps(packed, ensure_ascii=False, separators=(",", ":")) + ";\n",
+        "/* Persian translations listed by QuranEnc; source/version retained. */\\n"
+        "window.QURAN_EXTRA_DATA = " + json.dumps({"translations": packed}, ensure_ascii=False, separators=(",", ":")) + ";\\n",
         encoding="utf-8"
     )
-    print("Packaged QuranEnc Persian translation and two tafsir resources for all 114 surahs.")
-    for rid, item in resources:
-        print(f"{rid}: {item.get('title')} (version {item.get('version')})")
+    print(f"Packaged {len(packed)} catalogue-listed Persian translations across 114 surahs.")
+    for key, item in packed.items():
+        print(f"{key}: {item['title']} (version {item['version']})")
 
 if __name__ == "__main__":
     main()
