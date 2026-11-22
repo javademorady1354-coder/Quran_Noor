@@ -28,7 +28,7 @@ select{flex:1;min-width:130px}.small{font-size:12px;color:var(--muted)}.gold{col
 .badge{display:inline-block;border:1px solid #566a74;border-radius:20px;padding:3px 8px;color:var(--gold);font-size:11px}
 .note-area{min-height:74px}.notice{line-height:1.9;color:var(--muted);font-size:12px}
 .results button{width:100%;text-align:right;margin:4px 0}.bookmark-item{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
-#reader{display:none}footer{text-align:center;color:var(--muted);font-size:11px;padding:22px}
+footer{text-align:center;color:var(--muted);font-size:11px;padding:22px}
 @media(min-width:600px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.arabic{font-size:34px}}
 body.light{--bg:#f4efe4;--panel:#fffaf0;--panel2:#eee5d4;--txt:#202b31;--muted:#5d696f;--line:#d4c8b4;background:var(--bg);color:var(--txt)}
 body.light nav{background:#e7dece}body.light input,body.light select,body.light textarea{background:#fff;color:#202b31;border-color:#c9bda9}body.light button{background:#eee5d4;color:#202b31;border-color:#c9bda9}body.light button.primary{background:#b88b3c;color:white}
@@ -66,7 +66,7 @@ body.light nav{background:#e7dece}body.light input,body.light select,body.light 
 <label class="small">تفاسیر درخواستی</label><select disabled><option>المیزان — نیازمند مجوز بازنشر</option><option>نمونه — نیازمند مجوز بازنشر</option><option>نور — نیازمند مجوز بازنشر</option><option>مجمع‌البیان — نیازمند مجوز بازنشر</option></select></div>
 <div class="panel"><b>منبع متن قرآن</b><p class="notice">متن عثمانی از پروژه Tanzil دریافت می‌شود و بدون تغییر در برنامه قرار می‌گیرد. برای مشاهده منبع و شرایط استفاده، به صفحه معرفی‌شده در بخش منابع مخزن مراجعه کنید.</p></div>
 </section>
-<section id="reader">
+<section id="reader" class="hidden">
 <div class="panel">
 <div class="page-head"><button onclick="backHome()">← فهرست</button><div><span class="badge" id="readerPage">صفحه ۱</span> <span class="badge" id="readerJuz">جزء ۱</span></div></div>
 <div class="row"><button onclick="movePage(-1)">قبلی</button><select id="readerSurah" onchange="goSurahSelect()"></select><button onclick="movePage(1)">بعدی</button></div>
