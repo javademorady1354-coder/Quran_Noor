@@ -5,15 +5,25 @@ import json
 import pathlib
 import urllib.request
 import urllib.error
+import time
 
 BASE = "https://quranenc.com/api/v1"
 OUT = pathlib.Path("app/src/main/assets/quran-extra-data.js")
 HEADERS = {"User-Agent": "QuranNoor/1.1 (offline resource packaging)"}
 
 def get_json(url):
-    req = urllib.request.Request(url, headers=HEADERS)
-    with urllib.request.urlopen(req, timeout=60) as response:
-        return json.loads(response.read().decode("utf-8"))
+    last_error = None
+    for attempt in range(4):
+        try:
+            req = urllib.request.Request(url, headers=HEADERS)
+            with urllib.request.urlopen(req, timeout=90) as response:
+                return json.loads(response.read().decode("utf-8"))
+        except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError) as exc:
+            last_error = exc
+            if attempt == 3:
+                break
+            time.sleep(2 ** attempt)
+    raise RuntimeError(f"QuranEnc request failed after retries: {url}: {last_error}")
 
 def norm(value):
     return str(value or "").replace("ي", "ی").replace("ى", "ی").replace("ك", "ک").replace("ة", "ه")
@@ -54,19 +64,23 @@ def main():
     def fetch_sura(pair):
         resource_id, item, sura = pair
         key = item["key"]
-        data = get_json(f"{BASE}/translation/sura/{key}/{sura}")
+        url = f"{BASE}/translation/sura/{key}/{sura}"
+        data = get_json(url)
         rows = data.get("result")
         if not isinstance(rows, list) or not rows:
-            raise RuntimeError(f"No rows for {key}, sura {sura}")
+            raise RuntimeError(f"Unexpected QuranEnc response for {key}, sura {sura}: {str(data)[:500]}")
         return resource_id, sura, rows
 
     tasks = [(rid, item, sura) for rid, item in resources for sura in range(1, 115)]
     collected = {rid: {} for rid, _ in resources}
-    with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
         futures = [pool.submit(fetch_sura, task) for task in tasks]
         for future in concurrent.futures.as_completed(futures):
-            rid, sura, rows = future.result()
-            collected[rid][str(sura)] = rows
+            try:
+                rid, sura, rows = future.result()
+                collected[rid][str(sura)] = rows
+            except Exception as exc:
+                raise RuntimeError(f"Failed while downloading QuranEnc resource: {exc}") from exc
 
     packed = {}
     for rid, item in resources:
