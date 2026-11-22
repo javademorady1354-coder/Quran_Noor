@@ -64,11 +64,9 @@ def main():
         }
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
-    OUT.write_text(
-        "/* Persian translations listed by QuranEnc; source/version retained. */\\n"
-        "window.QURAN_EXTRA_DATA = " + json.dumps({"translations": packed}, ensure_ascii=False, separators=(",", ":")) + ";\\n",
-        encoding="utf-8"
-    )
+    output = "/* Persian translations listed by QuranEnc; source/version retained. */" + chr(10)
+    output += "window.QURAN_EXTRA_DATA = " + json.dumps({"translations": packed}, ensure_ascii=False, separators=(",", ":")) + ";" + chr(10)
+    OUT.write_text(output, encoding="utf-8")
     print(f"Packaged {len(packed)} catalogue-listed Persian translations across 114 surahs.")
     for key, item in packed.items():
         print(f"{key}: {item['title']} (version {item['version']})")
