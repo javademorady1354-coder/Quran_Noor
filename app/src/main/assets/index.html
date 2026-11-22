@@ -79,8 +79,9 @@ body.light nav{background:#e7dece}body.light input,body.light select,body.light 
 <div class="panel"><b>ترجمه و تفسیر</b>
 <p class="notice">فقط ترجمه‌هایی در برنامه قرار می‌گیرند که در فهرست رسمی QuranEnc با مجوز بازنشر منتشر شده باشند. متن، نام ناشر و شماره نسخه بدون تغییر نگهداری می‌شود.</p>
 <label class="small" for="translationChoice">انتخاب ترجمه فارسی</label><select id="translationChoice" onchange="localStorage.setItem('qn_translation',this.value)"></select>
-<p class="notice" id="resourceStatus">در حال بررسی داده‌های ترجمه...</p><label class="small" for="translationFontRange">اندازه قلم ترجمه فارسی</label><div class="setting-range"><button type="button" onclick="changeTranslationFont(-1)">−</button><input id="translationFontRange" type="range" min="13" max="30" value="17" oninput="setTranslationFont(this.value)"><button type="button" onclick="changeTranslationFont(1)">+</button></div><p class="small">اندازه فعلی ترجمه: <span id="translationFontLabel">17</span> پیکسل</p>
-<p class="notice">در حال حاضر تفسیرهای فارسیِ قابل‌بازنشر در بسته داده تأیید نشده‌اند؛ بنابراین برنامه متن تفسیری ساختگی یا دارای مجوز نامشخص نمایش نمی‌دهد. منبع: <a href="https://quranenc.com/fa/home/api" target="_blank" rel="noreferrer" style="color:var(--gold)">QuranEnc.com</a></p></div>
+<label class="small" for="tafsirChoice">انتخاب تفسیر فارسی آفلاین</label><select id="tafsirChoice" onchange="localStorage.setItem('qn_tafsir',this.value)"><option value="">در حال بررسی منابع مجاز...</option></select>
+<p class="notice" id="resourceStatus">در حال بررسی داده‌های ترجمه و تفسیر...</p><label class="small" for="translationFontRange">اندازه قلم ترجمه و تفسیر فارسی</label><div class="setting-range"><button type="button" onclick="changeTranslationFont(-1)">−</button><input id="translationFontRange" type="range" min="13" max="30" value="17" oninput="setTranslationFont(this.value)"><button type="button" onclick="changeTranslationFont(1)">+</button></div><p class="small">اندازه فعلی ترجمه: <span id="translationFontLabel">17</span> پیکسل</p>
+<p class="notice">فقط تفسیرهایی نمایش داده می‌شوند که در فهرست رسمی QuranEnc برای بازنشر ارائه شده باشند. متن کامل منابع هنگام ساخت APK در برنامه ذخیره می‌شود تا بدون اینترنت قابل مطالعه باشد. منبع و شرایط بازنشر: <a href="https://quranenc.com/fa/home/api" target="_blank" rel="noreferrer" style="color:var(--gold)">QuranEnc.com</a></p></div>
 <div class="panel"><b>منبع متن قرآن</b><p class="notice">متن عثمانی از پروژه Tanzil دریافت می‌شود و بدون تغییر در برنامه قرار می‌گیرد. برای مشاهده منبع و شرایط استفاده، به صفحه معرفی‌شده در بخش منابع مخزن مراجعه کنید.</p></div>
 </section>
 <section id="reader" class="hidden">
@@ -135,7 +136,7 @@ function initResources(){
  select.innerHTML=keys.map(k=>'<option value="'+escapeHtml(k)+'">'+escapeHtml(list[k].title||k)+'</option>').join('');
  const saved=localStorage.getItem('qn_translation');
  select.value=keys.includes(saved)?saved:keys[0];
- $('resourceStatus').textContent=keys.length+' ترجمه فارسی از فهرست رسمی QuranEnc آماده است. تفسیر آفلاینِ دارای مجوز جداگانه هنوز در این بسته موجود نیست.';
+ $('resourceStatus').textContent=keys.length+' منبع ترجمه و '+tafsirKeys.length+' منبع تفسیر فارسی از فهرست رسمی QuranEnc برای بسته آفلاین شناسایی شد.';
 }
 function showResource(s,a,type){
  const box=$('resource-'+s+'-'+a);if(!box)return;
