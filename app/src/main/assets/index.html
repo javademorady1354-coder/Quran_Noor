@@ -26,7 +26,7 @@ select{flex:1;min-width:130px}.small{font-size:12px;color:var(--muted)}.gold{col
 .arabic{font-family:"Noto Naskh Arabic","Amiri",serif;font-size:29px;line-height:2.05;text-align:justify;direction:rtl;white-space:normal}
 .ayah-tools{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.ayah-tools button{font-size:11px;padding:7px 9px}
 .badge{display:inline-block;border:1px solid #566a74;border-radius:20px;padding:3px 8px;color:var(--gold);font-size:11px}
-.note-area{min-height:74px}.notice{line-height:1.9;color:var(--muted);font-size:12px}
+.note-area{min-height:74px}.resource-text{margin-top:10px;padding:12px;border:1px solid var(--line);border-radius:10px;line-height:2;white-space:pre-wrap}.resource-text .resource-source{display:block;margin-top:8px;font-size:11px;color:var(--muted)}.notice{line-height:1.9;color:var(--muted);font-size:12px}
 .results button{width:100%;text-align:right;margin:4px 0}.bookmark-item{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
 footer{text-align:center;color:var(--muted);font-size:11px;padding:22px}
 @media(min-width:600px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.arabic{font-size:34px}}
@@ -61,9 +61,11 @@ body.light nav{background:#e7dece}body.light input,body.light select,body.light 
 <section id="bookmarks" class="hidden"><div class="panel"><b>نشانک‌های ذخیره‌شده</b><div id="bookmarkList" class="notice">هنوز نشانکی ذخیره نشده است.</div></div><div class="panel"><b>آخرین محل مطالعه</b><div id="lastRead" class="notice">هنوز مطالعه‌ای ثبت نشده است.</div></div></section>
 <section id="settings" class="hidden">
 <div class="panel"><b>تنظیمات نمایش</b><div class="toolbar"><button onclick="changeFont(-2)">کوچک‌تر</button><button onclick="changeFont(2)">بزرگ‌تر</button><button onclick="toggleTheme()">تغییر حالت روشن / تیره</button></div><p class="small">اندازه نوشته: <span id="fontLabel">29</span> پیکسل</p></div>
-<div class="panel"><b>ترجمه و تفسیر</b><p class="notice">نام ترجمه‌ها و تفاسیر در فهرست زیر آماده شده‌اند؛ اما متن آن‌ها تا دریافت مجوز بازنشر در برنامه قرار نمی‌گیرد.</p>
-<label class="small">ترجمه‌های درخواستی</label><select disabled><option>فولادوند — نیازمند مجوز بازنشر</option><option>مکارم شیرازی — نیازمند مجوز بازنشر</option><option>الهی قمشه‌ای — نیازمند مجوز بازنشر</option><option>بهاءالدین خرمشاهی — نیازمند مجوز بازنشر</option></select>
-<label class="small">تفاسیر درخواستی</label><select disabled><option>المیزان — نیازمند مجوز بازنشر</option><option>نمونه — نیازمند مجوز بازنشر</option><option>نور — نیازمند مجوز بازنشر</option><option>مجمع‌البیان — نیازمند مجوز بازنشر</option></select></div>
+<div class="panel"><b>ترجمه و تفسیر فعال</b>
+<p class="notice">منابع فارسی قابل بازنشر از دایرةالمعارف قرآن کریم (QuranEnc): ترجمهٔ مرکز ترجمهٔ رواد، کتاب مختصر در تفسیر قرآن کریم و ترجمهٔ فارسی تفسیر سعدی. متن هر منبع همراه با نام ناشر و شماره نسخه نمایش داده می‌شود.</p>
+<label class="small" for="tafsirChoice">منبع تفسیر</label><select id="tafsirChoice" onchange="localStorage.setItem('qn_tafsir',this.value)"><option value="brief_tafsir">کتاب مختصر در تفسیر قرآن کریم</option><option value="saadi_tafsir">ترجمهٔ فارسی تفسیر سعدی</option></select>
+<p class="notice" id="resourceStatus">در حال بررسی داده‌های ترجمه و تفسیر...</p>
+<p class="notice">شرایط بازنشر: متن منبع بدون تغییر، ذکر ناشر و QuranEnc.com، درج شماره نسخه و به‌روزرسانی بر اساس نسخه‌های جدید. منبع: <a href="https://quranenc.com/fa" target="_blank" rel="noreferrer" style="color:var(--gold)">QuranEnc.com</a></p></div>
 <div class="panel"><b>منبع متن قرآن</b><p class="notice">متن عثمانی از پروژه Tanzil دریافت می‌شود و بدون تغییر در برنامه قرار می‌گیرد. برای مشاهده منبع و شرایط استفاده، به صفحه معرفی‌شده در بخش منابع مخزن مراجعه کنید.</p></div>
 </section>
 <section id="reader" class="hidden">
@@ -78,9 +80,11 @@ body.light nav{background:#e7dece}body.light input,body.light select,body.light 
 </main>
 <footer>نور هدایت • نسخه آفلاین • متن عربی: Tanzil Project</footer>
 <script src="quran-data.js"></script>
+<script src="quran-extra-data.js"></script>
 <script>
 const data=window.QURAN_DATA;
 let currentPage=1,currentFont=29,currentSurah=1;
+const extraData=window.QURAN_EXTRA_DATA||null;
 const $=id=>document.getElementById(id);
 const allAyahs=()=>data.surahs.flatMap(s=>s.v.map(a=>({...a,sn:s.n,sa:s.a})));
 const ayahKey=(s,a)=>s+':'+a;
@@ -88,12 +92,12 @@ function getBookmarks(){try{return JSON.parse(localStorage.getItem('qn_bookmarks
 function setBookmarks(v){localStorage.setItem('qn_bookmarks',JSON.stringify(v))}
 function showTab(id,btn){['surahs','pages','search','bookmarks','settings','reader'].forEach(x=>$(x).classList.toggle('hidden',x!==id));document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));if(btn)btn.classList.add('active');if(id==='bookmarks')renderBookmarks()}
 function renderSurahs(){const q=$('surahSearch').value.trim().toLowerCase();$('surahList').innerHTML='';data.surahs.filter(s=>(s.a+' '+s.e+' '+s.tr).toLowerCase().includes(q)).forEach(s=>{const b=document.createElement('button');b.className='surah';b.innerHTML='<span>'+s.a+'</span><span class="small">'+s.n+' • '+s.c+' آیه</span>';b.onclick=()=>openSurah(s.n);$('surahList').appendChild(b)})}
-function init(){if(!data||!data.surahs||data.surahs.length!==114){$('surahList').textContent='داده قرآن در این نسخه بارگذاری نشده است. APK را از آخرین اجرای موفق Actions دریافت کنید.';return}renderSurahs();$('readerSurah').innerHTML=data.surahs.map(s=>'<option value="'+s.n+'">'+s.n+' - '+s.a+'</option>').join('');$('juzSelect').innerHTML=Array.from({length:30},(_,i)=>'<option value="'+(i+1)+'">جزء '+(i+1)+'</option>').join('');const last=localStorage.getItem('qn_last');if(last){const x=JSON.parse(last);currentPage=x.p||1}renderPage(currentPage)}
+function init(){if(!data||!data.surahs||data.surahs.length!==114){$('surahList').textContent='داده قرآن در این نسخه بارگذاری نشده است. APK را از آخرین اجرای موفق Actions دریافت کنید.';return}renderSurahs();$('readerSurah').innerHTML=data.surahs.map(s=>'<option value="'+s.n+'">'+s.n+' - '+s.a+'</option>').join('');$('juzSelect').innerHTML=Array.from({length:30},(_,i)=>'<option value="'+(i+1)+'">جزء '+(i+1)+'</option>').join('');const last=localStorage.getItem('qn_last');if(last){const x=JSON.parse(last);currentPage=x.p||1}renderPage(currentPage);initResources()}
 function openSurah(n){const s=data.surahs[n-1];if(!s)return;currentSurah=n;const first=s.v[0];renderPage(first.p);$('readerSurah').value=n;showTab('reader')}
 function openAyah(s,a){const surah=data.surahs[s-1],v=surah&&surah.v[a-1];if(v){currentSurah=s;renderPage(v.p);setTimeout(()=>{const el=$('ayah-'+s+'-'+a);if(el)el.scrollIntoView({behavior:'smooth',block:'center'})},50);showTab('reader')}}
 function renderPage(p){p=Math.max(1,Math.min(604,Number(p)||1));currentPage=p;$('pageInput').value=p;const rows=[];data.surahs.forEach(s=>s.v.forEach(a=>{if(a.p===p)rows.push({s,a})}));if(!rows.length){$('ayahList').innerHTML='<p class="notice">برای این صفحه آیه‌ای یافت نشد.</p>';return}
 currentSurah=rows[0].s.n;$('readerSurah').value=currentSurah;$('readerTitle').textContent=rows[0].s.a+' • '+(rows.length>1&&rows[0].s.n!==rows[rows.length-1].s.n?'چند سوره':'سوره '+rows[0].s.n);$('readerPage').textContent='صفحه '+p;$('readerJuz').textContent='جزء '+rows[0].a.j;
-$('ayahList').innerHTML=rows.map(({s,a})=>'<article class="ayah" id="ayah-'+s.n+'-'+a.n+'"><div class="small">'+s.n+':'+a.n+' <span class="badge">صفحه '+a.p+'</span></div><div class="arabic">'+a.t+' <span class="gold">۞</span></div><div class="ayah-tools"><button onclick="toggleBookmark('+s.n+','+a.n+')">☆ نشانک</button><button onclick="editNote('+s.n+','+a.n+')">یادداشت</button><button onclick="copyAyah('+s.n+','+a.n+')">کپی آیه</button></div><div id="note-'+s.n+'-'+a.n+'" class="small"></div></article>').join('');
+$('ayahList').innerHTML=rows.map(({s,a})=>'<article class="ayah" id="ayah-'+s.n+'-'+a.n+'"><div class="small">'+s.n+':'+a.n+' <span class="badge">صفحه '+a.p+'</span></div><div class="arabic">'+a.t+' <span class="gold">۞</span></div><div class="ayah-tools"><button onclick="showResource('+s.n+','+a.n+','translation')">ترجمه</button><button onclick="showResource('+s.n+','+a.n+','tafsir')">تفسیر</button><button onclick="toggleBookmark('+s.n+','+a.n+')">☆ نشانک</button><button onclick="editNote('+s.n+','+a.n+')">یادداشت</button><button onclick="copyAyah('+s.n+','+a.n+')">کپی آیه</button></div><div id="resource-'+s.n+'-'+a.n+'" class="resource-text hidden"></div><div id="note-'+s.n+'-'+a.n+'" class="small"></div></article>').join('');
 localStorage.setItem('qn_last',JSON.stringify({p:p,s:currentSurah,a:rows[0].a.n}));}
 function movePage(d){renderPage(currentPage+d);showTab('reader')}
 function goPage(){renderPage($('pageInput').value);showTab('reader')}
@@ -104,6 +108,23 @@ function toggleBookmark(s,a){const key=ayahKey(s,a),b=getBookmarks();const i=b.i
 function renderBookmarks(){const b=getBookmarks();$('bookmarkList').innerHTML=b.length?b.map(k=>{const [s,a]=k.split(':').map(Number);return '<div class="bookmark-item"><span>'+data.surahs[s-1].a+' • آیه '+a+'</span><button onclick="openAyah('+s+','+a+')">باز کردن</button></div>'}).join(''):'هنوز نشانکی ذخیره نشده است.';const last=localStorage.getItem('qn_last');if(last){const x=JSON.parse(last);$('lastRead').innerHTML='صفحه '+x.p+' <button onclick="renderPage('+x.p+');showTab(String.fromCharCode(114,101,97,100,101,114))">ادامه مطالعه</button>'}else $('lastRead').textContent='هنوز مطالعه‌ای ثبت نشده است.'}
 function editNote(s,a){const key='qn_note_'+ayahKey(s,a),old=localStorage.getItem(key)||'',val=prompt('یادداشت برای آیه '+s+':'+a,old);if(val!==null){localStorage.setItem(key,val);$('note-'+s+'-'+a).textContent=val?'یادداشت: '+val:''}}
 function copyAyah(s,a){const t=data.surahs[s-1].v[a-1].t;if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(()=>alert('متن آیه کپی شد.')).catch(()=>alert(t));else alert(t)}
+function escapeHtml(v){return String(v||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function initResources(){
+ if(!extraData||!extraData.translation||!extraData.brief_tafsir||!extraData.saadi_tafsir){$('resourceStatus').textContent='داده ترجمه و تفسیر در این نسخه موجود نیست؛ لطفاً آخرین نسخه APK را دریافت کنید.';return}
+ const choice=localStorage.getItem('qn_tafsir')||'brief_tafsir';$('tafsirChoice').value=extraData[choice]?choice:'brief_tafsir';
+ $('resourceStatus').textContent='ترجمه: '+extraData.translation.version+' • تفسیر مختصر: '+extraData.brief_tafsir.version+' • تفسیر سعدی: '+extraData.saadi_tafsir.version;
+}
+function showResource(s,a,type){
+ const box=$('resource-'+s+'-'+a);if(!box)return;
+ const key=type==='translation'?'translation':($('tafsirChoice')?$('tafsirChoice').value:'brief_tafsir');
+ const resource=extraData&&extraData[key];if(!resource){box.textContent='متن این منبع در این نسخه در دسترس نیست.';box.classList.remove('hidden');return}
+ const rows=resource.surahs&&resource.surahs[String(s)]||[];
+ const item=rows.find(x=>Number(x.aya)===Number(a));
+ if(!item){box.textContent='برای این آیه متنی از این منبع ثبت نشده است.';box.classList.remove('hidden');return}
+ const body=item.translation||'';const foot=item.footnotes||'';
+ box.innerHTML='<div>'+escapeHtml(body)+'</div>'+(foot?'<div style="margin-top:8px">'+escapeHtml(foot)+'</div>':'')+'<span class="resource-source">ناشر: '+escapeHtml(resource.description)+' • منبع: QuranEnc.com • نسخه: '+escapeHtml(resource.version)+'</span>';
+ box.classList.remove('hidden');
+}
 function searchQuran(){const q=$('query').value.trim();if(!q)return;const res=[];for(const s of data.surahs){for(const a of s.v){if(a.t.includes(q)){res.push({s,a});if(res.length>=100)break}}if(res.length>=100)break}$('searchStatus').textContent=res.length+' نتیجه (حداکثر ۱۰۰ مورد نمایش داده می‌شود).';$('searchResults').innerHTML=res.map(x=>'<button onclick="openAyah('+x.s.n+','+x.a.n+')"><b>'+x.s.a+' '+x.s.n+':'+x.a.n+'</b><br>'+x.a.t+'</button>').join('')||'<p class="notice">نتیجه‌ای یافت نشد.</p>'}
 function changeFont(d){currentFont=Math.max(20,Math.min(48,currentFont+d));document.querySelectorAll('.arabic').forEach(x=>x.style.fontSize=currentFont+'px');$('fontLabel').textContent=currentFont;localStorage.setItem('qn_font',currentFont)}
 function toggleTheme(){document.body.classList.toggle('light');localStorage.setItem('qn_light',document.body.classList.contains('light')?'1':'0')}
