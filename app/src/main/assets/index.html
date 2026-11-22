@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#101820">
+<title>قرآن کریم – نور هدایت</title>
+<style>
+:root{--bg:#101820;--panel:#1b2935;--gold:#d9b66f;--txt:#f4efe4;--muted:#b8c1c8}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font-family:Tahoma,Arial,sans-serif}
+header{padding:22px 18px 16px;background:linear-gradient(140deg,#243b43,#14232c);border-bottom:1px solid #354751}
+h1{font-size:22px;margin:0 0 7px;color:var(--gold)}header p{margin:0;color:var(--muted);font-size:13px}
+nav{display:flex;gap:8px;padding:12px;overflow:auto;background:#15222b;position:sticky;top:0}
+button,input,select{font:inherit}button{border:1px solid #45545d;background:#263743;color:var(--txt);padding:10px 13px;border-radius:10px}
+button.active{background:var(--gold);color:#17232b;border-color:var(--gold)}
+main{padding:14px;max-width:760px;margin:auto}.panel{background:var(--panel);border:1px solid #30424d;border-radius:16px;padding:15px;margin-bottom:13px}
+input{width:100%;padding:12px;border-radius:10px;border:1px solid #465660;background:#101c24;color:var(--txt);margin:8px 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.surah{display:flex;justify-content:space-between;align-items:center;text-align:right;width:100%;gap:8px}
+.small{font-size:12px;color:var(--muted)}.gold{color:var(--gold)}
+#reader{display:none}.arabic{font-family:serif;font-size:30px;line-height:2.1;text-align:center;direction:rtl}
+.notice{line-height:1.9;color:var(--muted);font-size:13px}.toolbar{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+footer{text-align:center;color:var(--muted);font-size:11px;padding:24px}
+</style></head>
+<body>
+<header><h1>قرآن کریم – نور هدایت</h1><p>نسخه آفلاین • بدون صوت • محیط مطالعه</p></header>
+<nav><button class="active" onclick="showTab('surahs',this)">سوره‌ها</button><button onclick="showTab('bookmarks',this)">نشان‌شده‌ها</button><button onclick="showTab('settings',this)">تنظیمات</button></nav>
+<main>
+<section id="surahs">
+<div class="panel"><b>جست‌وجوی سوره</b><input id="search" placeholder="نام سوره را بنویسید..." oninput="filterSurahs()"><div class="small">فهرست ۱۱۴ سوره قرآن کریم</div></div>
+<div id="surahList" class="grid"></div>
+</section>
+<section id="reader" class="panel">
+<button onclick="backToList()">← بازگشت به فهرست</button>
+<h2 id="surahTitle" class="gold"></h2>
+<div class="notice">این نسخه، پوسته اولیه برنامه است. متن کامل مصحف عثمان‌طه، شماره صفحه‌های ۶۰۴گانه، ترجمه‌ها و تفاسیر باید پس از افزودن داده‌های دارای مجوز و تطبیق دقیق در نسخه بعدی فعال شوند.</div>
+<div class="toolbar"><button onclick="saveBookmark()">ذخیره نشانک</button><button onclick="changeFont(2)">بزرگ‌تر</button><button onclick="changeFont(-2)">کوچک‌تر</button></div>
+<div id="bookmarkMsg" class="small"></div>
+</section>
+<section id="bookmarks" style="display:none"><div class="panel"><h3>نشانک‌های من</h3><div id="bookmarkList" class="notice">هنوز نشانکی ذخیره نشده است.</div></div></section>
+<section id="settings" style="display:none"><div class="panel"><h3>تنظیمات مطالعه</h3><label>اندازه نوشته</label><div class="toolbar"><button onclick="changeFont(2)">افزایش</button><button onclick="changeFont(-2)">کاهش</button><button onclick="toggleTheme()">تغییر حالت روشن/تیره</button></div><p class="notice">امکانات ترجمه، تفسیر، یادداشت، جست‌وجوی آیه و پرش به جزء و صفحه در مراحل بعدی تکمیل می‌شوند.</p></div></section>
+</main><footer>نور هدایت • نسخه آزمایشی ۰٫۱</footer>
+<script>
+const names=["الفاتحة","البقرة","آل عمران","النساء","المائدة","الأنعام","الأعراف","الأنفال","التوبة","يونس","هود","يوسف","الرعد","إبراهيم","الحجر","النحل","الإسراء","الكهف","مريم","طه","الأنبياء","الحج","المؤمنون","النور","الفرقان","الشعراء","النمل","القصص","العنكبوت","الروم","لقمان","السجدة","الأحزاب","سبأ","فاطر","يس","الصافات","ص","الزمر","غافر","فصلت","الشورى","الزخرف","الدخان","الجاثية","الأحقاف","محمد","الفتح","الحجرات","ق","الذاريات","الطور","النجم","القمر","الرحمن","الواقعة","الحديد","المجادلة","الحشر","الممتحنة","الصف","الجمعة","المنافقون","التغابن","الطلاق","التحريم","الملك","القلم","الحاقة","المعارج","نوح","الجن","المزمل","المدثر","القيامة","الإنسان","المرسلات","النبأ","النازعات","عبس","التكوير","الانفطار","المطففين","الانشقاق","البروج","الطارق","الأعلى","الغاشية","الفجر","البلد","الشمس","الليل","الضحى","الشرح","التين","العلق","القدر","البينة","الزلزلة","العاديات","القارعة","التكاثر","العصر","الهمزة","الفيل","قريش","الماعون","الكوثر","الكافرون","النصر","المسد","الإخلاص","الفلق","الناس"];
+let selected=0,fontSize=30;
+function render(list=names){const el=document.getElementById('surahList');el.innerHTML='';list.forEach(n=>{const i=names.indexOf(n);const b=document.createElement('button');b.className='surah';b.innerHTML='<span>'+n+'</span><span class="small">'+(i+1)+' • سوره</span>';b.onclick=()=>openSurah(i);el.appendChild(b)})}
+function filterSurahs(){const q=document.getElementById('search').value.trim();render(names.filter(n=>n.includes(q)))}
+function showTab(id,btn){['surahs','reader','bookmarks','settings'].forEach(x=>document.getElementById(x).style.display=x===id?(id==='reader'?'block':'block'):'none');document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));if(btn)btn.classList.add('active');if(id==='bookmarks')renderBookmarks()}
+function openSurah(i){selected=i;document.getElementById('surahTitle').textContent='سوره '+names[i];document.getElementById('surahs').style.display='none';document.getElementById('reader').style.display='block';document.getElementById('bookmarkMsg').textContent=''}
+function backToList(){document.getElementById('reader').style.display='none';document.getElementById('surahs').style.display='block'}
+function saveBookmark(){let a=JSON.parse(localStorage.getItem('quranBookmarks')||'[]');if(!a.includes(selected))a.push(selected);localStorage.setItem('quranBookmarks',JSON.stringify(a));document.getElementById('bookmarkMsg').textContent='نشانک سوره ذخیره شد.'}
+function renderBookmarks(){let a=JSON.parse(localStorage.getItem('quranBookmarks')||'[]');let el=document.getElementById('bookmarkList');el.innerHTML='';if(!a.length){el.textContent='هنوز نشانکی ذخیره نشده است.';return}a.forEach(i=>{let b=document.createElement('button');b.textContent=names[i];b.onclick=()=>{showTab('surahs',document.querySelector('nav button'));openSurah(i)};el.appendChild(b)})}
+function changeFont(d){fontSize=Math.max(20,Math.min(48,fontSize+d));document.querySelectorAll('.arabic').forEach(x=>x.style.fontSize=fontSize+'px')}
+function toggleTheme(){let light=document.body.dataset.light!=='1';document.body.dataset.light=light?'1':'0';document.documentElement.style.setProperty('--bg',light?'#f4efe4':'#101820');document.documentElement.style.setProperty('--panel',light?'#fffaf0':'#1b2935');document.documentElement.style.setProperty('--txt',light?'#202b31':'#f4efe4')}
+render();
+</script></body></html>
