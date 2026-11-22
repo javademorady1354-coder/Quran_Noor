@@ -15,8 +15,11 @@ def get_json(url):
     with urllib.request.urlopen(req, timeout=60) as response:
         return json.loads(response.read().decode("utf-8"))
 
+def norm(value):
+    return str(value or "").replace("ي", "ی").replace("ى", "ی").replace("ك", "ک").replace("ة", "ه")
+
 def choose(items, predicate, label):
-    matches = [x for x in items if predicate(x)]
+    matches = [x for x in items if predicate(norm(x.get("title", "")), norm(x.get("key", "")))]
     if len(matches) != 1:
         names = [x.get("title", x.get("key", "?")) for x in matches]
         raise SystemExit(f"Expected exactly one {label}; found {len(matches)}: {names}")
@@ -31,17 +34,17 @@ def main():
 
     translation = choose(
         persian,
-        lambda x: "رواد" in x.get("title", "") and "ترجمه" in x.get("title", ""),
+        lambda title, key: ("رواد" in title and "ترجمه" in title) or "persian_rwwad" in key,
         "Persian translation (Ruwad)"
     )
     brief_tafsir = choose(
         persian,
-        lambda x: "مختصر" in x.get("title", "") and "تفسیر" in x.get("title", ""),
+        lambda title, key: "مختصر" in title and "تفسیر" in title,
         "Persian brief tafsir"
     )
     saadi_tafsir = choose(
         persian,
-        lambda x: "سعدی" in x.get("title", "") and "تفسیر" in x.get("title", ""),
+        lambda title, key: "سعد" in title and "تفسیر" in title,
         "Persian Tafsir al-Saadi"
     )
 
