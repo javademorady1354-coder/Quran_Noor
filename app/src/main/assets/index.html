@@ -126,8 +126,7 @@ function copyAyah(s,a){const t=data.surahs[s-1].v[a-1].t;if(navigator.clipboard&
 function escapeHtml(v){return String(v||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function initResources(){
  const list=extraData&&extraData.translations?extraData.translations:{};
- const keys=Object.keys(list);
- const select=$('translationChoice');
+ const allKeys=Object.keys(list);\n const tafsirKeys=allKeys.filter(k=>/تفسیر|tafsir/i.test((list[k].title||'')+' '+(list[k].description||'')));\n const keys=allKeys.filter(k=>!tafsirKeys.includes(k));\n const ts=$('tafsirChoice');if(ts){ts.innerHTML=tafsirKeys.length?tafsirKeys.map(k=>'<option value=\"'+escapeHtml(k)+'\">'+escapeHtml(list[k].title||k)+'</option>').join(''):'<option value=\"\">تفسیر آفلاین در داده فعلی نیست</option>';ts.disabled=!tafsirKeys.length;const savedT=localStorage.getItem('qn_tafsir');if(tafsirKeys.includes(savedT))ts.value=savedT;}\n const select=$('translationChoice');
  if(!keys.length){$('resourceStatus').textContent='هیچ ترجمه فارسی تأییدشده‌ای در داده آفلاین این نسخه موجود نیست.';select.innerHTML='';return}
  select.innerHTML=keys.map(k=>'<option value="'+escapeHtml(k)+'">'+escapeHtml(list[k].title||k)+'</option>').join('');
  const saved=localStorage.getItem('qn_translation');
@@ -136,10 +135,7 @@ function initResources(){
 }
 function showResource(s,a,type){
  const box=$('resource-'+s+'-'+a);if(!box)return;
- if(type==='tafsir'){
-   box.textContent='تفسیر آفلاینِ فارسی با مجوز بازنشر تأییدشده هنوز به این نسخه افزوده نشده است.';
-   box.classList.remove('hidden');return;
- }
+ if(type==='tafsir'){const list=extraData&&extraData.translations?extraData.translations:{};const key=$('tafsirChoice')?$('tafsirChoice').value:'';const resource=list[key];const rows=resource&&resource.surahs&&resource.surahs[String(s)]||[];const item=rows.find(x=>Number(x.aya)===Number(a));if(!item){box.textContent='تفسیر آفلاین برای این آیه در داده‌های نصب‌شده موجود نیست.';box.classList.remove('hidden');return;}box.innerHTML='<div>'+escapeHtml(item.translation||'')+'</div>'+(item.footnotes?'<div style=\"margin-top:8px\">'+escapeHtml(item.footnotes)+'</div>':'')+'<span class=\"resource-source\">'+escapeHtml(resource.title||key)+' • '+escapeHtml(resource.description||'')+' • '+escapeHtml(resource.version||'')+'</span>';box.classList.remove('hidden');return;}
  const list=extraData&&extraData.translations?extraData.translations:{};
  const key=$('translationChoice')?$('translationChoice').value:'';
  const resource=list[key];
