@@ -33,7 +33,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:22px}
 body.light{--bg:#f4efe4;--panel:#fffaf0;--panel2:#eee5d4;--txt:#202b31;--muted:#5d696f;--line:#d4c8b4;background:var(--bg);color:var(--txt)}
 body.light nav{background:#e7dece}body.light input,body.light select,body.light textarea{background:#fff;color:#202b31;border-color:#c9bda9}body.light button{background:#eee5d4;color:#202b31;border-color:#c9bda9}body.light button.primary{background:#b88b3c;color:white}
 
-.home-intro{text-align:center;padding:18px 8px 10px}.home-intro h2{color:var(--gold);margin:9px 0;font-size:22px}.home-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0 24px}.home-card{min-height:145px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;background:linear-gradient(145deg,#243b43,#172832);border:1px solid #52636b;border-radius:18px;padding:16px;text-align:center;box-shadow:0 5px 16px #0003}.home-card b{font-size:15px;color:var(--gold)}.home-card small{font-size:11px;color:var(--muted)}.home-card span{font-size:34px;color:#e8cc8c}
+.section-back{margin:8px 0 12px;background:transparent;border-color:var(--line);color:var(--gold)}.home-intro{text-align:center;padding:18px 8px 10px}.home-intro h2{color:var(--gold);margin:9px 0;font-size:22px}.home-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0 24px}.home-card{min-height:145px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;background:linear-gradient(145deg,#243b43,#172832);border:1px solid #52636b;border-radius:18px;padding:16px;text-align:center;box-shadow:0 5px 16px #0003}.home-card b{font-size:15px;color:var(--gold)}.home-card small{font-size:11px;color:var(--muted)}.home-card span{font-size:34px;color:#e8cc8c}
 .reader-fullscreen{position:fixed!important;inset:0!important;z-index:1000!important;width:100vw!important;height:100dvh!important;max-height:100dvh!important;overflow-y:auto!important;overscroll-behavior:contain;background:var(--bg);margin:0!important;border-radius:0!important;padding:12px 12px 105px!important}.reader-fullscreen .page-head{position:sticky;top:0;background:var(--panel);padding:8px;z-index:3}
 .reader-bottom{display:none}.reading-mode .reader-bottom{display:flex;position:fixed;z-index:1200;left:0;right:0;bottom:0;padding:9px 8px calc(9px + env(safe-area-inset-bottom));gap:5px;justify-content:space-around;align-items:center;flex-wrap:nowrap;background:#13232ddd;backdrop-filter:blur(12px);border-top:1px solid var(--gold);box-shadow:0 -5px 20px #0005}.reader-bottom button{font-size:11px;padding:10px 7px;white-space:nowrap;min-width:0;flex:1}
 .ayah{border:1px solid var(--line);border-radius:15px;margin:12px 0;padding:16px 13px;background:linear-gradient(145deg,var(--panel),var(--panel2))}.ayah.selected{border:1px solid var(--gold);box-shadow:0 0 0 2px #d9b66f22}.ayah-tools{display:none;gap:6px;flex-wrap:wrap;margin-top:12px;padding-top:10px;border-top:1px dashed var(--line)}.ayah.selected .ayah-tools{display:flex}.ayah-tools button{font-size:11px;padding:7px 9px}.arabic{text-align:justify;line-height:2.15;word-spacing:2px}.ayah-number{display:inline-flex;align-items:center;justify-content:center;color:var(--gold);font-size:.62em;border:1px solid var(--gold);border-radius:50%;width:2em;height:2em;margin:0 5px;vertical-align:middle}.basmala{text-align:center;color:var(--gold);font-size:.9em;margin:0 auto 10px;line-height:2.1}
@@ -50,10 +50,10 @@ body.reading-mode>header,body.reading-mode>nav,body.reading-mode>footer{display:
 <button class="home-card" onclick="showTab('search')"><span>⌕</span><b>جست‌وجوی قرآن</b><small>جست‌وجو در آیات</small></button>
 <button class="home-card" onclick="showTab('bookmarks')"><span>☆</span><b>نشانک‌ها</b><small>آیات ذخیره‌شده</small></button>
 </div></section>
-<section id="surahs" class="hidden">
+<section id="surahs" class="hidden"><button class="section-back" onclick="showTab('home')">← بازگشت به خانه</button>
 <div class="panel"><b>فهرست سوره‌ها</b><input id="surahSearch" placeholder="جست‌وجوی نام سوره..." oninput="renderSurahs()"><div id="surahList" class="grid"></div></div>
 </section>
-<section id="pages" class="hidden">
+<section id="pages" class="hidden"><button class="section-back" onclick="showTab('home')">← بازگشت به خانه</button>
 <div class="panel">
 <b>رفتن به صفحه مصحف</b>
 <div class="row"><button onclick="movePage(-1)">صفحه قبل</button><input id="pageInput" type="number" min="1" max="604" value="1" style="max-width:100px;text-align:center"><button class="primary" onclick="goPage()">برو</button><button onclick="movePage(1)">صفحه بعد</button></div>
@@ -61,11 +61,11 @@ body.reading-mode>header,body.reading-mode>nav,body.reading-mode>footer{display:
 </div>
 <div class="panel"><b>رفتن به جزء</b><div class="row"><select id="juzSelect"></select><button class="primary" onclick="goJuz()">نمایش جزء</button></div></div>
 </section>
-<section id="search" class="hidden">
+<section id="search" class="hidden"><button class="section-back" onclick="showTab('home')">← بازگشت به خانه</button>
 <div class="panel"><b>جست‌وجو در متن عربی قرآن</b><input id="query" placeholder="عبارت عربی را وارد کنید"><button class="primary" onclick="searchQuran()">جست‌وجو</button><div id="searchStatus" class="small"></div><div id="searchResults" class="results"></div></div>
 </section>
-<section id="bookmarks" class="hidden"><div class="panel"><b>نشانک‌های ذخیره‌شده</b><div id="bookmarkList" class="notice">هنوز نشانکی ذخیره نشده است.</div></div><div class="panel"><b>آخرین محل مطالعه</b><div id="lastRead" class="notice">هنوز مطالعه‌ای ثبت نشده است.</div></div></section>
-<section id="settings" class="hidden">
+<section id="bookmarks" class="hidden"><button class="section-back" onclick="showTab('home')">← بازگشت به خانه</button><div class="panel"><b>نشانک‌های ذخیره‌شده</b><div id="bookmarkList" class="notice">هنوز نشانکی ذخیره نشده است.</div></div><div class="panel"><b>آخرین محل مطالعه</b><div id="lastRead" class="notice">هنوز مطالعه‌ای ثبت نشده است.</div></div></section>
+<section id="settings" class="hidden"><button class="section-back" onclick="showTab('home')">← بازگشت به خانه</button>
 <div class="panel"><b>تنظیمات ظاهر قرآن</b><label class="small" for="fontFamily">نوع قلم آیات عربی</label><select id="fontFamily" onchange="setFontFamily(this.value)"><option value="Noto Naskh Arabic,serif">نسخ قرآنی</option><option value="Noto Sans Arabic,sans-serif">نسخ ساده</option><option value="Amiri,serif">Amiri (در صورت نصب بودن)</option><option value="serif">سریف سیستم</option><option value="sans-serif">بدون سریف سیستم</option><option value="monospace">تک‌فاصله</option></select><label class="small" for="fontRange">اندازه قلم آیات عربی</label><div class="setting-range"><button onclick="changeFont(-2)">−</button><input id="fontRange" type="range" min="20" max="48" value="29" oninput="setFont(this.value)"><button onclick="changeFont(2)">+</button></div><p class="small">اندازه فعلی: <span id="fontLabel">29</span> پیکسل</p><div class="color-control"><label for="textColor">رنگ خط قرآن</label><input id="textColor" type="color" value="#f4efe4" onchange="setQuranTextColor(this.value)"></div>
 <div class="palette-title">انتخاب سریع رنگ خط قرآن</div><div class="palette">
 <button type="button" class="swatch" style="--swatch:#f4efe4" aria-label="سفید کرمی" onclick="setQuranTextColor('#f4efe4')"></button>
@@ -99,7 +99,7 @@ body.reading-mode>header,body.reading-mode>nav,body.reading-mode>footer{display:
 
 </div>
 <div id="reader-bottom" class="reader-bottom">
-<button id="translationToggle" onclick="toggleTranslations()">ترجمه: خاموش</button><button onclick="movePage(-1)">قبل</button><button class="primary" onclick="movePage(1)">بعد</button><button onclick="changeFont(-1)">A−</button><button onclick="changeFont(1)">A+</button><button onclick="cycleFontFamily()">قلم</button><button onclick="showTab('settings')">تنظیم</button>
+<button id="translationToggle" onclick="toggleTranslations()">ترجمه: خاموش</button><button onclick="movePage(-1)">قبل</button><button class="primary" onclick="movePage(1)">بعد</button><button onclick="changeFont(-1)">A−</button><button onclick="changeFont(1)">A+</button><button onclick="cycleFontFamily()">قلم</button>
 </div>
 </section>
 </main>
