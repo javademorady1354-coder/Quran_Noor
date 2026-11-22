@@ -30,6 +30,8 @@ jobs:
       - name: Prepare complete Quran data
         run: |
           python3 scripts/prepare_quran.py
+      - name: Prepare licensed Persian translation and tafsir data
+        run: python3 scripts/prepare_quran_extra.py
       - name: Build debug APK
         run: gradle --no-daemon assembleDebug
       - name: Upload APK
