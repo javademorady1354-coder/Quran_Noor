@@ -32,21 +32,18 @@ def main():
     if not persian:
         raise SystemExit("QuranEnc returned no Persian resources")
 
-    translation = choose(
-        persian,
-        lambda title, key: ("رواد" in title and "ترجمه" in title) or "persian_rwwad" in key,
-        "Persian translation (Ruwad)"
-    )
-    brief_tafsir = choose(
-        persian,
-        lambda title, key: "مختصر" in title and "تفسیر" in title,
-        "Persian brief tafsir"
-    )
-    saadi_tafsir = choose(
-        persian,
-        lambda title, key: "سعد" in title and "تفسیر" in title,
-        "Persian Tafsir al-Saadi"
-    )
+    by_key = {x.get("key"): x for x in items}
+    required = {
+        "translation": "persian_ih",
+        "brief_tafsir": "persian_mokhtasar",
+        "saadi_tafsir": "persian_saadi",
+    }
+    missing = [key for key in required.values() if key not in by_key]
+    if missing:
+        raise SystemExit(f"QuranEnc Persian resources missing keys: {missing}; available: {[x.get('key') for x in items]}")
+    translation = by_key[required["translation"]]
+    brief_tafsir = by_key[required["brief_tafsir"]]
+    saadi_tafsir = by_key[required["saadi_tafsir"]]
 
     resources = [
         ("translation", translation),
